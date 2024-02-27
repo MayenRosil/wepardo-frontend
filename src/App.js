@@ -2,7 +2,13 @@ import logo from './logo.svg';
 import './App.css';
 
 const myFunction = async ()=>{
-  fetch('http://wepardo.services:3002/api/users')
+  fetch('http://wepardo.services:3002/api/users', {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json',
+			'Access-Control-Allow-Origin': '*',
+		},
+	})
   .then(response => response.json())
   .then(data => console.log(data));
 }

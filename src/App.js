@@ -1,7 +1,16 @@
 import logo from './logo.svg';
 import './App.css';
 
+const myFunction = async ()=>{
+  fetch('http://wepardo.services:3002/api/users')
+  .then(response => response.json())
+  .then(data => console.log(data));
+}
+
 function App() {
+
+  
+
   return (
     <div className="App">
       <header className="App-header">
@@ -9,14 +18,9 @@ function App() {
         <p>
           Edit <code>src/App.js</code> and save to reload.
         </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <button onClick={myFunction}>
+        Click me!
+      </button>
       </header>
     </div>
   );

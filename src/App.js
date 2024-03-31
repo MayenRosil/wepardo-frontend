@@ -2,7 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 
 const myFunction = async ()=>{
-  fetch('http://wepardo.services/api/test', {
+  fetch('https://wepardo.services/api/test', {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',

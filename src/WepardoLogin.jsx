@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-unused-vars
-import * as React from 'react';
+import React, {useEffect, useState} from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -10,6 +10,8 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import './styles/takePhoto.css'
+import TakePhoto from './components/takePhoto';
 
 
 function Copyright(props) {
@@ -29,7 +31,15 @@ function Copyright(props) {
 
 const defaultTheme = createTheme();
 
+
+
 export default function SignInSide() {
+
+    const [solicitarFoto, setSolicitarFoto] = useState(false);
+    const [imagenExiste, setImagenExiste] = useState(false);
+
+    const handleClosePhoto = () => setSolicitarFoto(false);
+
     const handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
@@ -39,9 +49,52 @@ export default function SignInSide() {
         });
     };
 
+    const fetchData =  () => {
+        let cuerpo = {
+            username: "mayenrosil",
+            password: "12345"
+        }
+        fetch('http://localhost:3001/api/auth', {
+            method: 'POST', 
+            mode: 'cors', 
+            cache: 'no-cache', 
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(cuerpo)
+          })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('La solicitud falló');
+        }
+        return response.json(); // Convertir la respuesta a formato JSON
+      })
+      .then(data => {
+        // Aquí puedes trabajar con los datos obtenidos
+        console.log(data);
+        if(data.errorCode == 0){
+            if(data.imageExist) setImagenExiste(true);
+            setSolicitarFoto(true);
+        }
+      })
+      .catch(error => {
+        // Manejar errores
+        console.error('Ocurrió un error:', error);
+      });
+    
+       
+    }
+
     return (
         <ThemeProvider theme={defaultTheme}>
+                   {solicitarFoto && (
+                    <div>
+                    <button onClick={handleClosePhoto}>Cerrar</button>
+                    <TakePhoto imagenExiste={imagenExiste} />
+                    </div>
+      )}
             <div style={{ display: 'flex', justifyContent:'center' , alignItems:'center', margin:'0', height:'100vh',  }}>
+     
                 <Grid container  sx={{ height: '80vh', width: '130vh', borderRadius: '30px', overflow: 'hidden' }}>
                     <Grid
                         item
@@ -103,6 +156,9 @@ export default function SignInSide() {
                                     fullWidth
                                     variant="contained"
                                     sx={{ mt: 3, mb: 2 }}
+                                    onClick={() => {
+                                        fetchData()
+                                      }}
                                 >
                                     Sign In
                                 </Button>

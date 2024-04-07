@@ -18,51 +18,54 @@ const TakePhoto = (props) => {
   const takePhoto = () => {
     const context = canvasRef.current.getContext('2d');
     context.drawImage(videoRef.current, 0, 0, canvasRef.current.width, canvasRef.current.height);
-    const imageData = canvasRef.current.toDataURL('image/png');
+    const imageData = canvasRef.current.toDataURL('image/png', 0.05);
     setImageData(imageData)
   };
 
   const uploadPhoto = async () => {
     let cuerpo = {
-        base64image: imageData,
-        username: 'mayenrosil',
-        exist: props.imagenExiste
+      base64image: imageData,
+      username: 'mayenrosil',
+      exist: props.imagenExiste
     }
     console.log(cuerpo)
-    await fetch('http://localhost:3001/api/auth/uploadImage', {
-        method: 'POST', 
-        mode: 'cors', 
-        headers: {
-            'Content-Type': "application/json"
-        },
-        body: JSON.stringify(cuerpo)
+    await fetch('https://wepardo.services/api/auth/uploadImage', {
+      method: 'POST',
+      mode: 'cors',
+      headers: {
+        'Content-Type': "application/json",
+        'Content-Length': JSON.stringify(cuerpo).length
+      },
+      body: JSON.stringify(cuerpo)
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('La solicitud falló');
+        }
+        return response.json(); // Convertir la respuesta a formato JSON
       })
-  .then(response => {
-    if (!response.ok) {
-      throw new Error('La solicitud falló');
-    }
-    return response.json(); // Convertir la respuesta a formato JSON
-  })
-  .then(data => {
-    // Aquí puedes trabajar con los datos obtenidos
-    console.log(data);
-  })
-  .catch(error => {
-    // Manejar errores
-    console.error('Ocurrió un error:', error);
-  });
+      .then(data => {
+        // Aquí puedes trabajar con los datos obtenidos
+        console.log(data);
+      })
+      .catch(error => {
+        // Manejar errores
+        console.error('Ocurrió un error:', error);
+      });
 
   }
 
   return (
-    <div>
-      <button onClick={startCamera}>Abrir cámara</button>
+    <div style={{ maxHeight: '100%', maxWidth: '100%', display: 'flex', flexDirection: 'column', backgroundColor: 'red', alignItems: 'center' }}>
+      <button style={{ alignSelf: 'flex-start' }} onClick={startCamera}>Abrir cámara</button>
       <br />
-      <video ref={videoRef}  autoPlay />
-      <canvas ref={canvasRef}  />
+      <video style={{ height: '100px', width: '100px' }} ref={videoRef} autoPlay />
+      <canvas ref={canvasRef} style={{ height: '100px', width: '100px' }} />
       <br />
-      <button onClick={takePhoto}>Tomar foto</button>
-      <button onClick={uploadPhoto}>Subir foto</button>
+      <div style={{ display: 'flex', flexDirection: 'row' }}>
+        <button onClick={takePhoto}>Tomar foto</button>
+        <button onClick={uploadPhoto}>Subir foto</button>
+      </div>
     </div>
   );
 };

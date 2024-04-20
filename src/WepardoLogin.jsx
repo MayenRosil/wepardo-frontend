@@ -90,7 +90,7 @@ export default function SignInSide() {
             username: userUsername,
             password: userPassword
         }
-        fetch('http://localhost:3001/api/auth', {
+        fetch('https://wepardo.services/api/auth', {
             method: 'POST',
             mode: 'cors',
             cache: 'no-cache',

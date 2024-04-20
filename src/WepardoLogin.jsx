@@ -12,6 +12,8 @@ import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import './styles/takePhoto.css'
 import TakePhoto from './components/takePhoto';
+import Snackbar from '@mui/material/Snackbar';
+import IconButton from '@mui/material/IconButton';
 
 
 function Copyright(props) {
@@ -27,6 +29,8 @@ function Copyright(props) {
     );
 }
 
+
+
 // TODO remove, this demo shouldn't need to reset the theme.
 
 const defaultTheme = createTheme();
@@ -37,24 +41,56 @@ export default function SignInSide() {
 
     const [solicitarFoto, setSolicitarFoto] = useState(false);
     const [imagenExiste, setImagenExiste] = useState(false);
+    const [userUsername, setUserUsername] = useState("");
+    const [userPassword, setUserPassword] = useState("");
+    const [showSnack, setShowSnack] = useState(false);
+    const [snackText, setSnackText] = useState("");
 
     const handleClosePhoto = () => setSolicitarFoto(false);
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        console.log({
-            email: data.get('email'),
-            password: data.get('password'),
-        });
     };
 
-    const fetchData = () => {
-        let cuerpo = {
-            username: "mayenrosil",
-            password: "12345"
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
         }
-        fetch('https://wepardo.services/api/auth', {
+
+        setShowSnack(false);
+    };
+
+    const action = (
+        <React.Fragment>
+            <Button color={"primary"} size="small" onClick={handleClose}>
+                X
+            </Button>
+        </React.Fragment>
+    );
+
+
+    const toggleSnack = (action) => {
+        setShowSnack(action)
+    }
+
+    const signIn = () => {
+
+        if (userUsername == "") {
+            setSnackText("Ingresa usuario")
+            toggleSnack(true)
+            return;
+        }
+        if (userPassword == "") {
+            setSnackText("Ingresa clave")
+            toggleSnack(true)
+            return;
+        }
+
+        let cuerpo = {
+            username: userUsername,
+            password: userPassword
+        }
+        fetch('http://localhost:3001/api/auth', {
             method: 'POST',
             mode: 'cors',
             cache: 'no-cache',
@@ -65,6 +101,8 @@ export default function SignInSide() {
         })
             .then(response => {
                 if (!response.ok) {
+                    setSnackText("La solicitud falló");
+                    setShowSnack(true);
                     throw new Error('La solicitud falló');
                 }
                 return response.json(); // Convertir la respuesta a formato JSON
@@ -75,27 +113,87 @@ export default function SignInSide() {
                 if (data.errorCode == 0) {
                     if (data.imageExist) setImagenExiste(true);
                     setSolicitarFoto(true);
+                } else {
+                    setSnackText(data.message);
+                    setShowSnack(true);
                 }
             })
             .catch(error => {
                 // Manejar errores
                 console.error('Ocurrió un error:', error);
+                setSnackText('Error inesperado');
+                setShowSnack(true);
             });
 
 
     }
 
+    const uploadPhoto = async (imageData) => {
+        let cuerpo = {
+          base64image: imageData,
+          username: userUsername,
+          exist: imagenExiste
+        }
+        console.log(cuerpo)
+        await fetch('https://wepardo.services/api/auth/uploadImage', {
+          method: 'POST',
+          mode: 'cors',
+          headers: {
+            'Content-Type': "application/json",
+            'Content-Length': JSON.stringify(cuerpo).length
+          },
+          body: JSON.stringify(cuerpo)
+        })
+          .then(response => {
+            if (!response.ok) {
+                setSnackText("La solicitud falló");
+                setShowSnack(true);
+              throw new Error('La solicitud falló');
+            }
+            return response.json(); // Convertir la respuesta a formato JSON
+          })
+          .then(data => {
+            // Aquí puedes trabajar con los datos obtenidos
+            console.log(data);
+            setSnackText(data.message);
+            setShowSnack(true);
+          })
+          .catch(error => {
+            // Manejar errores
+            console.error('Ocurrió un error:', error);
+            setSnackText('Error inesperado');
+            setShowSnack(true);
+          });
+    
+      }
+
     return (
         <ThemeProvider theme={defaultTheme}>
+
 
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '0', height: '100vh' }}>
 
                 <Grid container sx={{ height: '80vh', width: '130vh', borderRadius: '30px', overflow: 'hidden', backgroundColor: 'white' }}>
+                    <Snackbar
+                        open={showSnack}
+                        autoHideDuration={5000}
+                        onClose={handleClose}
+                        message={snackText}
+                        action={action}
 
+                        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                    />
                     {solicitarFoto ?
-                        <div style={{ padding: '100px', backgroundColor: 'transparent', width: '90%', height: '90%', maxWidth: '100%', maxHeight: '100%' }}>
-                            <button onClick={handleClosePhoto}>Cerrar</button>
-                            <TakePhoto imagenExiste={imagenExiste} />
+                        <div style={{ padding: '100px', backgroundColor: 'transparent', width: '90%', height: '90%', maxWidth: '100%', maxHeight: '80%', }}>
+                            <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+                                <div style={{ borderWidth: 1, borderColor: 'black' }}>
+                                    <Button color={"error"} size="small" onClick={handleClosePhoto}
+                                        variant="outlined">
+                                        ⬅
+                                    </Button>
+                                </div>
+                            </div>
+                            <TakePhoto userName={userUsername} imagenExiste={imagenExiste} uploadPhoto={(img) => uploadPhoto(img)} />
                         </div>
                         :
                         <>
@@ -129,16 +227,18 @@ export default function SignInSide() {
                                     <Typography component="h1" variant="h5">
                                         Sign in
                                     </Typography>
-                                    <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
+                                    <Box component="form" noValidate onSubmit={(e) => e.preventDefault()} sx={{ mt: 1 }}>
                                         <TextField
                                             margin="normal"
                                             required
                                             fullWidth
                                             id="email"
-                                            label="Email Address"
+                                            label="Username"
                                             name="email"
                                             autoComplete="email"
                                             autoFocus
+                                            value={userUsername}
+                                            onChange={(e) => { setUserUsername(e.target.value) }}
                                         />
                                         <TextField
                                             margin="normal"
@@ -149,18 +249,20 @@ export default function SignInSide() {
                                             type="password"
                                             id="password"
                                             autoComplete="current-password"
+                                            value={userPassword}
+                                            onChange={(e) => { setUserPassword(e.target.value) }}
                                         />
-                                        <FormControlLabel
+                                        {/* <FormControlLabel
                                             control={<Checkbox value="remember" color="primary" />}
                                             label="Remember me"
-                                        />
+                                        /> */}
                                         <Button
                                             type="submit"
                                             fullWidth
                                             variant="contained"
                                             sx={{ mt: 3, mb: 2 }}
-                                            onClick={() => {
-                                                fetchData()
+                                            onClick={(e) => {
+                                                signIn();
                                             }}
                                         >
                                             Sign In
@@ -171,11 +273,11 @@ export default function SignInSide() {
                                                     Forgot password?
                                                 </Link>
                                             </Grid>
-                                            <Grid item>
+                                            {/* <Grid item>
                                                 <Link href="#" variant="body2">
                                                     {"Don't have an account? Sign Up"}
                                                 </Link>
-                                            </Grid>
+                                            </Grid> */}
                                         </Grid>
                                         <Copyright sx={{ mt: 5 }} />
                                     </Box>

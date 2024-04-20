@@ -1,15 +1,18 @@
 import React, { useRef, useState } from 'react';
+import Button from '@mui/material/Button';
 
 const TakePhoto = (props) => {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
 
+  const [imageView, setImageView] = useState(false);
   const [imageData, setImageData] = useState("");
 
   const startCamera = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ video: true });
       videoRef.current.srcObject = stream;
+      setImageView(true)
     } catch (error) {
       console.error('Error al acceder a la cámara:', error);
     }
@@ -17,55 +20,55 @@ const TakePhoto = (props) => {
 
   const takePhoto = () => {
     const context = canvasRef.current.getContext('2d');
-    context.drawImage(videoRef.current, 0, 0, canvasRef.current.width, canvasRef.current.height);
-    const imageData = canvasRef.current.toDataURL('image/png', 0.05);
+    context.drawImage(videoRef.current, 0, 0, 400, 150);
+    const imageData = canvasRef.current.toDataURL('image/png', 0.5);
     setImageData(imageData)
+    setImageView(false)
   };
 
-  const uploadPhoto = async () => {
-    let cuerpo = {
-      base64image: imageData,
-      username: 'mayenrosil',
-      exist: props.imagenExiste
-    }
-    console.log(cuerpo)
-    await fetch('https://wepardo.services/api/auth/uploadImage', {
-      method: 'POST',
-      mode: 'cors',
-      headers: {
-        'Content-Type': "application/json",
-        'Content-Length': JSON.stringify(cuerpo).length
-      },
-      body: JSON.stringify(cuerpo)
-    })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('La solicitud falló');
-        }
-        return response.json(); // Convertir la respuesta a formato JSON
-      })
-      .then(data => {
-        // Aquí puedes trabajar con los datos obtenidos
-        console.log(data);
-      })
-      .catch(error => {
-        // Manejar errores
-        console.error('Ocurrió un error:', error);
-      });
 
-  }
 
   return (
-    <div style={{ maxHeight: '100%', maxWidth: '100%', display: 'flex', flexDirection: 'column', backgroundColor: 'red', alignItems: 'center' }}>
-      <button style={{ alignSelf: 'flex-start' }} onClick={startCamera}>Abrir cámara</button>
-      <br />
-      <video style={{ height: '100px', width: '100px' }} ref={videoRef} autoPlay />
-      <canvas ref={canvasRef} style={{ height: '100px', width: '100px' }} />
-      <br />
-      <div style={{ display: 'flex', flexDirection: 'row' }}>
-        <button onClick={takePhoto}>Tomar foto</button>
-        <button onClick={uploadPhoto}>Subir foto</button>
+    <div style={{ maxHeight: '100%', maxWidth: '100%', display: 'flex', flexDirection: 'column', backgroundColor: 'white', alignItems: 'center' }}>
+
+      <div style={{ alignSelf: 'center', zIndex: 10, marginTop: '-4%' }}>
+        <Button color={"info"} size="small" onClick={startCamera}
+          variant="contained">
+          Abrir cámara
+        </Button>
       </div>
+      <br />
+      <div style={{ flexDirection: 'row',  zIndex: 2, }}>
+        <Button color={"secondary"} size="small" onClick={takePhoto}
+          variant="contained" style={{marginRight: 2.5}}>
+          Tomar foto
+        </Button>
+        <Button color={"secondary"} size="small" onClick={() => props.uploadPhoto(imageData)}
+          variant="contained" style={{marginLeft: 2.5}}>
+          Subir foto
+        </Button>
+      </div>
+      <div style={{
+        position: 'absolute', zIndex: imageView ? 1 : 0, borderRadius: "100%",
+        border: "3px solid #01579B", maxHeight: "300px", maxWidth: "300px", justifyContent: 'center', alignContent: 'center', overflow: 'hidden',
+        marginTop: '5%'
+      }}>
+        <video style={{
+          height: '410px', width: '400px',
+        }} ref={videoRef} autoPlay />
+
+      </div>
+      <div style={{
+        position: 'absolute', zIndex: imageView ? 0 : 1, borderRadius: "100%",
+        border: "3px solid #01579B", maxHeight: "300px", maxWidth: "300px", overflow: 'hidden',
+        marginTop: '5%'
+      }}>
+        <canvas ref={canvasRef} style={{
+          alignSelf: 'center',
+          height: '300px', width: '300px'
+        }} />
+      </div>
+
     </div>
   );
 };

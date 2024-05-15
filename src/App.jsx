@@ -1,4 +1,5 @@
-import SignInSide from "./WepardoLogin";
+import SignInSide from "./routes/login";
+import Home from "./routes/home";
 import {
     createBrowserRouter,
     RouterProvider,
@@ -17,7 +18,7 @@ import {
     },
     {
         path: '/home',
-        element: <div>Hola</div>
+        element: <Home />
     }
   ]);
 

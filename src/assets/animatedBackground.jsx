@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 import React from 'react';
-import './index.css'; // Archivo CSS para estilos
+import '../index.css'; // Archivo CSS para estilos
 
 export const RippleBackground = () => {
   return (

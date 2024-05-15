@@ -10,8 +10,8 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import './styles/takePhoto.css'
-import TakePhoto from './components/takePhoto';
+import '../styles/takePhoto.css'
+import TakePhoto from '../components/takePhoto';
 import Snackbar from '@mui/material/Snackbar';
 import IconButton from '@mui/material/IconButton';
 import Modal from '@mui/material/Modal';

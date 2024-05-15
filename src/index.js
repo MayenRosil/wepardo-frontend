@@ -7,21 +7,7 @@ import '@fontsource/roboto/700.css';
 import './index.css';
 import { App } from './App';
 import reportWebVitals from './reportWebVitals';
-import { RippleBackground } from './animatedBackground';
-
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
-
-import Root from "./routes/root";
-
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <Root />,
-  },
-]);
+import { RippleBackground } from './assets/animatedBackground';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

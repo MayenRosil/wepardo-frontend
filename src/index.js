@@ -9,6 +9,20 @@ import { App } from './App';
 import reportWebVitals from './reportWebVitals';
 import { RippleBackground } from './animatedBackground';
 
+import {
+  createBrowserRouter,
+  RouterProvider,
+} from "react-router-dom";
+
+import Root from "./routes/root";
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Root />,
+  },
+]);
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <>

@@ -14,7 +14,21 @@ import './styles/takePhoto.css'
 import TakePhoto from './components/takePhoto';
 import Snackbar from '@mui/material/Snackbar';
 import IconButton from '@mui/material/IconButton';
+import Modal from '@mui/material/Modal';
+import { useNavigate } from 'react-router-dom';
 
+
+const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+};
 
 function Copyright(props) {
     return (
@@ -31,13 +45,14 @@ function Copyright(props) {
 
 
 
-// TODO remove, this demo shouldn't need to reset the theme.
 
 const defaultTheme = createTheme();
 
 
 
 export default function SignInSide() {
+    
+    const navigate = useNavigate();
 
     const [solicitarFoto, setSolicitarFoto] = useState(false);
     const [imagenExiste, setImagenExiste] = useState(false);
@@ -45,6 +60,13 @@ export default function SignInSide() {
     const [userPassword, setUserPassword] = useState("");
     const [showSnack, setShowSnack] = useState(false);
     const [snackText, setSnackText] = useState("");
+    const [showPasswordModal, setShowPasswordModal] = useState(false);
+
+    const [authToken, setAuthToken] = useState(null);
+
+
+    const handleOpenModal = () => setShowPasswordModal(true);
+    const handleCloseModal = () => setShowPasswordModal(false);
 
     const handleClosePhoto = () => setSolicitarFoto(false);
 
@@ -111,6 +133,7 @@ export default function SignInSide() {
                 // Aquí puedes trabajar con los datos obtenidos
                 console.log(data);
                 if (data.errorCode == 0) {
+                    setAuthToken(data.token)
                     if (data.imageExist) setImagenExiste(true);
                     setSolicitarFoto(true);
                 } else {
@@ -130,42 +153,43 @@ export default function SignInSide() {
 
     const uploadPhoto = async (imageData) => {
         let cuerpo = {
-          base64image: imageData,
-          username: userUsername,
-          exist: imagenExiste
+            base64image: imageData,
+            username: userUsername,
+            exist: imagenExiste
         }
         console.log(cuerpo)
         await fetch('https://wepardo.services/api/auth/uploadImage', {
-          method: 'POST',
-          mode: 'cors',
-          headers: {
-            'Content-Type': "application/json",
-            'Content-Length': JSON.stringify(cuerpo).length
-          },
-          body: JSON.stringify(cuerpo)
+            method: 'POST',
+            mode: 'cors',
+            headers: {
+                'Content-Type': "application/json",
+                'Content-Length': JSON.stringify(cuerpo).length
+            },
+            body: JSON.stringify(cuerpo)
         })
-          .then(response => {
-            if (!response.ok) {
-                setSnackText("La solicitud falló");
+            .then(response => {
+                if (!response.ok) {
+                    setSnackText("La solicitud falló");
+                    setShowSnack(true);
+                    throw new Error('La solicitud falló');
+                }
+                return response.json(); // Convertir la respuesta a formato JSON
+            })
+            .then(data => {
+                // Aquí puedes trabajar con los datos obtenidos
+                localStorage.setItem('sessionToken', authToken)
+                console.log(data);
+                setSnackText(data.message);
                 setShowSnack(true);
-              throw new Error('La solicitud falló');
-            }
-            return response.json(); // Convertir la respuesta a formato JSON
-          })
-          .then(data => {
-            // Aquí puedes trabajar con los datos obtenidos
-            console.log(data);
-            setSnackText(data.message);
-            setShowSnack(true);
-          })
-          .catch(error => {
-            // Manejar errores
-            console.error('Ocurrió un error:', error);
-            setSnackText('Error inesperado');
-            setShowSnack(true);
-          });
-    
-      }
+            })
+            .catch(error => {
+                // Manejar errores
+                console.error('Ocurrió un error:', error);
+                setSnackText('Error inesperado');
+                setShowSnack(true);
+            });
+
+    }
 
     return (
         <ThemeProvider theme={defaultTheme}>
@@ -269,9 +293,17 @@ export default function SignInSide() {
                                         </Button>
                                         <Grid container>
                                             <Grid item xs>
-                                                <Link href="#" variant="body2">
+                                                <Button
+                                                    type="submit"
+                                                    fullWidth
+                                                    variant="contained"
+                                                    sx={{ mt: 3, mb: 2 }}
+                                                    onClick={
+                                                        handleOpenModal
+                                                    }
+                                                >
                                                     Forgot password?
-                                                </Link>
+                                                </Button>
                                             </Grid>
                                             {/* <Grid item>
                                                 <Link href="#" variant="body2">
@@ -285,6 +317,23 @@ export default function SignInSide() {
                             </Grid>
                         </>
                     }
+
+                    <Modal
+                        open={showPasswordModal}
+                        onClose={handleCloseModal}
+                        aria-labelledby="modal-modal-title"
+                        aria-describedby="modal-modal-description"
+                    >
+                        <Box sx={style}>
+                            <Typography id="modal-modal-title" variant="h6" component="h2">
+                                Text in a modal
+                            </Typography>
+                            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                                Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
+                            </Typography>
+                        </Box>
+                    </Modal>
+
                 </Grid>
             </div>
         </ThemeProvider>

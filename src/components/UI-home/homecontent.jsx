@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 
-
+const drawerWidth = 240;
 
 function MainContent() {
   return (
@@ -12,9 +12,9 @@ function MainContent() {
       sx={{
         flexGrow: 1,
         bgcolor: 'background.default',
-        padding: "1em",
-        margin: 5
-        
+        p: 3,
+        marginLeft: `${drawerWidth}px`,
+        marginTop: '64px', // Ajusta este valor si la altura de AppBar cambia
       }}
     >
       <Toolbar />

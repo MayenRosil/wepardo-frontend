@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/root.css';
 import ResponsiveAppBar from '../components/UI-home/navBar';
+import Sidebar from '../components/UI-home/sideBar';
 import MainContent from '../components/UI-home/homecontent';
 
 
@@ -18,7 +19,9 @@ const Home = () => {
     return (
       <>
         <ResponsiveAppBar />
+        <Sidebar />
         <MainContent />
+       
       </>
     )
 }

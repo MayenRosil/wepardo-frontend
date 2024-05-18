@@ -12,12 +12,16 @@ import Tooltip from '@mui/material/Tooltip';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Grid from '@mui/material/Grid';
+import { useNavigate } from 'react-router-dom';
 
 
-const pages = ['Catalogo', 'Vacaciones', 'Registros'];
+const pages = [{ titulo: 'Catalogo', ruta: '' }, { titulo: 'Vacaciones', ruta: '' }, { titulo: 'Registros', ruta: "/logs" }];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 function ResponsiveAppBar() {
+
+  const navigate = useNavigate();
+
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -37,11 +41,11 @@ function ResponsiveAppBar() {
   };
 
   return (
-    <AppBar  position="static"  padding= "0px" margin="0px" sx={{  background: '#FFD700' }}>
+    <AppBar position="static" padding="0px" margin="0px" sx={{ background: '#FFD700' }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Grid item sx={{ m: 1, bgcolor: 'secondary' }}>
-              <img src="/Chetah.svg" alt="My Icon" />
+            <img src="/Chetah.svg" alt="My Icon" />
           </Grid>
           <Typography
             variant="h6"
@@ -91,10 +95,10 @@ function ResponsiveAppBar() {
                 display: { xs: 'block', md: 'none' },
               }}
             >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
-                </MenuItem>
+              {pages.map(({ titulo, ruta }) => (
+                <Button key={titulo} onClick={() => { navigate(ruta) }}>
+                  <Typography textAlign="center">{titulo}</Typography>
+                </Button>
               ))}
             </Menu>
           </Box>
@@ -116,13 +120,10 @@ function ResponsiveAppBar() {
           >
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: '#5B0A97', display: 'block' }}
-              >
-                {page}
+
+            {pages.map(({ titulo, ruta }) => (
+              <Button key={titulo} onClick={() => { navigate(ruta) }} sx={{ my: 2, color: '#5B0A97', display: 'block' }}>
+                {titulo}
               </Button>
             ))}
           </Box>

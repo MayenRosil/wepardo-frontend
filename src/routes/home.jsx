@@ -1,6 +1,9 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/root.css';
+import ResponsiveAppBar from '../components/UI-home/navBar';
+import MainContent from '../components/UI-home/homecontent';
+
 
 const Home = () => {
 
@@ -14,9 +17,9 @@ const Home = () => {
 
     return (
       <>
-        <h1>Home</h1>
+        <ResponsiveAppBar />
+        <MainContent />
       </>
-    );
-  }
-
+    )
+}
   export default Home;

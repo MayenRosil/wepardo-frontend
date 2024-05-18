@@ -6,6 +6,7 @@ import {
   } from "react-router-dom";
   
   import Root from "./routes/root";
+import Logs from "./routes/logs";
   
   const router = createBrowserRouter([
     {
@@ -19,6 +20,10 @@ import {
     {
         path: '/home',
         element: <Home />
+    },
+    {
+        path: '/logs',
+        element: <Logs />
     }
   ]);
 

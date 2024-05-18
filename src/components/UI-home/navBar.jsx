@@ -37,7 +37,7 @@ function ResponsiveAppBar() {
   };
 
   return (
-    <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1, background: '#FFD700' }}>
+    <AppBar  position="static"  padding= "0px" margin="0px" sx={{  background: '#FFD700' }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Grid item sx={{ m: 1, bgcolor: 'secondary' }}>

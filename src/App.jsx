@@ -7,6 +7,7 @@ import {
   
   import Root from "./routes/root";
 import Logs from "./routes/logs";
+import Employees from "./routes/employees";
   
   const router = createBrowserRouter([
     {
@@ -24,6 +25,10 @@ import Logs from "./routes/logs";
     {
         path: '/logs',
         element: <Logs />
+    },
+    {
+        path: '/employees',
+        element: <Employees />
     }
   ]);
 

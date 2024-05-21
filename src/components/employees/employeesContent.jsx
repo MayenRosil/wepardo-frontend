@@ -10,10 +10,11 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
 
 
 
-const LogsContent = ({ list }) => {
+const EmployeesContent = ({ list }) => {
 
     const [filteredList, setFilteredList] = useState(list)
     const [filteredText, setFilteredText] = useState("")
@@ -26,8 +27,9 @@ const LogsContent = ({ list }) => {
         setFilteredText(text)
 
         if (text != "") {
-            setFilteredList(filteredList.filter((rec) => rec.entidad.toLowerCase().trim().includes(text) ||
-                rec.accion.toLowerCase().trim().includes(text) || rec.id.toString().toLowerCase().trim().includes(text)))
+            setFilteredList(filteredList.filter((rec) => rec.firstName.toLowerCase().trim().includes(text) ||
+                rec.CUI.toLowerCase().trim().includes(text) || rec.user.username.toLowerCase().trim().includes(text) ||
+                rec.firstLastName.toLowerCase().trim().includes(text) || rec.id.toString().toLowerCase().trim().includes(text)))
         } else {
             setFilteredList(list)
         }
@@ -45,6 +47,10 @@ const LogsContent = ({ list }) => {
                 maxHeight: 500
             }}
         >
+            <Button color={"primary"} size="small" onClick={() => { }}
+                variant="contained" style={{ marginRight: 2.5 }}>
+                Agregar empleado
+            </Button>
             <TextField
                 margin="normal"
                 fullWidth
@@ -62,22 +68,26 @@ const LogsContent = ({ list }) => {
                     <TableHead>
                         <TableRow>
                             <TableCell>Id</TableCell>
-                            <TableCell align="right">Entidad</TableCell>
-                            <TableCell align="right">Accion</TableCell>
-                            <TableCell align="right">Fecha</TableCell>
+                            <TableCell align="right">Nombre</TableCell>
+                            <TableCell align="right">Apellido</TableCell>
+                            <TableCell align="right">CUI</TableCell>
+                            <TableCell align="right">Usuario</TableCell>
+                            <TableCell align="right">Puesto</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {filteredList.map(({ id, entidad, accion, fecha }, idx) => (
+                        {filteredList.map(({ id, firstName, firstLastName, CUI, user, position }, idx) => (
                             <TableRow
                                 key={idx}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
 
                                 <TableCell component="th" scope="row">{id}</TableCell>
-                                <TableCell align="right">{entidad}</TableCell>
-                                <TableCell align="right">{accion}</TableCell>
-                                <TableCell align="right">{fecha}</TableCell>
+                                <TableCell align="right">{firstName}</TableCell>
+                                <TableCell align="right">{firstLastName}</TableCell>
+                                <TableCell align="right">{CUI}</TableCell>
+                                <TableCell align="right">{user.username}</TableCell>
+                                <TableCell align="right">{position.positionName}</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
@@ -87,4 +97,4 @@ const LogsContent = ({ list }) => {
     );
 }
 
-export default LogsContent;
+export default EmployeesContent;

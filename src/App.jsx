@@ -8,6 +8,7 @@ import {
   import Root from "./routes/root";
 import Logs from "./routes/logs";
 import Employees from "./routes/employees";
+import Exchange from "./routes/exchange";
   
   const router = createBrowserRouter([
     {
@@ -29,6 +30,10 @@ import Employees from "./routes/employees";
     {
         path: '/employees',
         element: <Employees />
+    },
+    {
+        path: '/exchange',
+        element: <Exchange />
     }
   ]);
 

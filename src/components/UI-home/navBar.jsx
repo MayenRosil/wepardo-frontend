@@ -15,7 +15,7 @@ import Grid from '@mui/material/Grid';
 import { useNavigate } from 'react-router-dom';
 
 
-const pages = [{ titulo: 'Catalogo de canje', ruta: '' }, { titulo: 'Registros', ruta: "/logs" }, {titulo: "Empleados", ruta: "/employees"}];
+const pages = [{ titulo: 'Catalogo de canje', ruta: '/exchange' }, { titulo: 'Bitácora', ruta: "/logs" }, {titulo: "Empleados", ruta: "/employees"}];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 function ResponsiveAppBar() {
@@ -51,7 +51,7 @@ function ResponsiveAppBar() {
             variant="h6"
             noWrap
             component="a"
-            href="#app-bar-with-responsive-menu"
+            href="/home"
             sx={{
               ml: 2,
               mr: 2,

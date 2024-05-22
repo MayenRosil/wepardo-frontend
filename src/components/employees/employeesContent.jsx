@@ -14,7 +14,7 @@ import Button from '@mui/material/Button';
 
 
 
-const EmployeesContent = ({ list }) => {
+const EmployeesContent = ({ list, setShowAddEmployeeModal, deleteEmployee }) => {
 
     const [filteredList, setFilteredList] = useState(list)
     const [filteredText, setFilteredText] = useState("")
@@ -47,7 +47,7 @@ const EmployeesContent = ({ list }) => {
                 maxHeight: 500
             }}
         >
-            <Button color={"primary"} size="small" onClick={() => { }}
+            <Button color={"primary"} size="small" onClick={() => { setShowAddEmployeeModal(true) }}
                 variant="contained" style={{ marginRight: 2.5 }}>
                 Agregar empleado
             </Button>
@@ -73,6 +73,7 @@ const EmployeesContent = ({ list }) => {
                             <TableCell align="right">CUI</TableCell>
                             <TableCell align="right">Usuario</TableCell>
                             <TableCell align="right">Puesto</TableCell>
+                            <TableCell align="right"></TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -88,6 +89,12 @@ const EmployeesContent = ({ list }) => {
                                 <TableCell align="right">{CUI}</TableCell>
                                 <TableCell align="right">{user.username}</TableCell>
                                 <TableCell align="right">{position.positionName}</TableCell>
+                                <TableCell align="right">
+                                <Button color={"error"} size="small" onClick={() => { deleteEmployee(id) }}
+                                    variant="contained" style={{ marginRight: 2.5 }}>
+                                    Borrar
+                                </Button>
+                                </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

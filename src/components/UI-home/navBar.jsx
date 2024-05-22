@@ -41,7 +41,7 @@ function ResponsiveAppBar() {
   };
 
   return (
-    <AppBar position="static" padding="0px" margin="0px" sx={{ background: '#FFD700' }}>
+    <AppBar  position="static" padding= "0px" margin="0px" sx={{  background: '#FFD700', borderRadius: 4  }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Grid item sx={{ m: 1, bgcolor: 'secondary' }}>

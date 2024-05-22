@@ -138,6 +138,7 @@ export default function SignInSide() {
                 // Aquí puedes trabajar con los datos obtenidos
                 console.log(data);
                 if (data.errorCode == 0) {
+                    localStorage.setItem('sessionToken', data.token)
                     setAuthToken(data.token)
                     if (data.imageExist) setImagenExiste(true);
                     setSolicitarFoto(true);

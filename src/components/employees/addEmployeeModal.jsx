@@ -27,7 +27,7 @@ const modalStyle = {
     bgcolor: 'background.paper',
     boxShadow: 24,
     p: 4,
-    height: 500,
+    maxHeight: 500,
     overflowY: 'scroll'
 };
 
@@ -203,7 +203,7 @@ const AddEmployeeModal = ({ setShowAddEmployeeModal, positionList, userList, sav
                                 saveEmployee(addEmployeeState);
                             }}
                         >
-                            Send code
+                            Save employee
                         </Button>
                     </Box>
 

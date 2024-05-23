@@ -72,7 +72,10 @@ const EmployeesContent = ({ list, setShowAddEmployeeModal, deleteEmployee }) => 
                             <TableCell align="right">Apellido</TableCell>
                             <TableCell align="right">CUI</TableCell>
                             <TableCell align="right">Usuario</TableCell>
+                            <TableCell align="right">Puntos</TableCell>
                             <TableCell align="right">Puesto</TableCell>
+                            <TableCell align="right">Departamento</TableCell>
+                            <TableCell align="right"></TableCell>
                             <TableCell align="right"></TableCell>
                         </TableRow>
                     </TableHead>
@@ -88,12 +91,20 @@ const EmployeesContent = ({ list, setShowAddEmployeeModal, deleteEmployee }) => 
                                 <TableCell align="right">{firstLastName}</TableCell>
                                 <TableCell align="right">{CUI}</TableCell>
                                 <TableCell align="right">{user.username}</TableCell>
+                                <TableCell align="right">{user.exchangePoints}</TableCell>
                                 <TableCell align="right">{position.positionName}</TableCell>
+                                <TableCell align="right">{position.department.departmentName}</TableCell>
                                 <TableCell align="right">
-                                <Button color={"error"} size="small" onClick={() => { deleteEmployee(id) }}
-                                    variant="contained" style={{ marginRight: 2.5 }}>
-                                    Borrar
-                                </Button>
+                                    <Button color={"secondary"} size="small" onClick={() => { deleteEmployee(id) }}
+                                        variant="contained" style={{ marginRight: 2.5 }}>
+                                        Ascender
+                                    </Button>
+                                </TableCell>
+                                <TableCell align="right">
+                                    <Button color={"error"} size="small" onClick={() => { deleteEmployee(id) }}
+                                        variant="contained" style={{ marginRight: 2.5 }}>
+                                        Borrar
+                                    </Button>
                                 </TableCell>
                             </TableRow>
                         ))}

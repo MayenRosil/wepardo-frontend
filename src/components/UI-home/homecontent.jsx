@@ -13,7 +13,7 @@ function MainContent() {
         flexGrow: 1,
         bgcolor: 'transparent',
         padding: "1em",
-        height: "85vh",
+        height: "75vh",
         marginTop: 3,
         justifyContent: "center",
         alignContent: "center",

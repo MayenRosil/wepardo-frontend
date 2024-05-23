@@ -7,7 +7,8 @@ import Snackbar from '@mui/material/Snackbar';
 import Button from '@mui/material/Button';
 import ExchangesContent from '../components/exchanges/exchangesContent';
 import Modal from '@mui/material/Modal';
-import AddEmployeeModal from '../components/employees/addEmployeeModal';
+import AddExchangeModal from '../components/exchanges/addExchangeModal';
+import ExchangeProductModal from '../components/exchanges/exchangeProductModal';
 
 
 const Exchange = () => {
@@ -17,13 +18,14 @@ const Exchange = () => {
 
     const [showSnack, setShowSnack] = useState(false);
     const [snackText, setSnackText] = useState("");
-    const [showAddEmployeeModal, setShowAddEmployeeModal] = useState(false);
+    const [showAddExchangeModal, setShowAddExchangeModal] = useState(false);
+    const [showExchangeProductModal, setShowExchangeProductModal] = useState(false);
 
     const [exchangeCatalog, setExchangeCatalog] = useState([])
     const [userList, setUserList] = useState([])
 
     const [authToken, setAuthToken] = useState("")
-    const [deleteButtonPressed, setDeleteButtonPressed] = useState(false)
+    const [pointsCost, setPointsCost] = useState(0)
 
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
@@ -53,7 +55,7 @@ const Exchange = () => {
             getExchangeCatalog(sessionToken);
             if(userList.length >= 0) getUsers(sessionToken);
         };
-    }, [showAddEmployeeModal])
+    }, [showAddExchangeModal])
 
     const getUsers = async (token) => {
         await fetch('https://wepardo.services/api/users', {
@@ -125,8 +127,8 @@ const Exchange = () => {
             })
     }
 
-    const saveEmployee = async (data) => {
-        await fetch('https://wepardo.services/api/employee', {
+    const saveProduct = async (data) => {
+        await fetch('https://wepardo.services/api/exchange', {
             method: 'POST',
             mode: 'cors',
             cache: 'no-cache',
@@ -149,7 +151,7 @@ const Exchange = () => {
                 if (data.errorCode == 0) {
                     setSnackText(data.message);
                     setShowSnack(true);
-                    setShowAddEmployeeModal(false);
+                    setShowAddExchangeModal(false);
                 } else {
                     setSnackText(data.message);
                     setShowSnack(true);
@@ -163,16 +165,17 @@ const Exchange = () => {
             })
     }
 
-    const deleteEmployee = async (id) => {
-        setDeleteButtonPressed(!deleteButtonPressed)
-        await fetch(`https://wepardo.services/api/employee/${id}`, {
-            method: 'DELETE',
+    const exchangeProduct = async (body) => {
+        console.log(body)
+        await fetch(`https://wepardo.services/api/exchange`, {
+            method: 'PATCH',
             mode: 'cors',
             cache: 'no-cache',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${authToken}`
             },
+            body: JSON.stringify(body)
         })
             .then(response => {
                 if (!response.ok) {
@@ -187,7 +190,7 @@ const Exchange = () => {
                 if (data.errorCode == 0) {
                     setSnackText(data.message);
                     setShowSnack(true);
-                    setShowAddEmployeeModal(false);
+                    setShowExchangeProductModal(false);
                 } else {
                     setSnackText(data.message);
                     setShowSnack(true);
@@ -213,9 +216,12 @@ const Exchange = () => {
                 anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
             />
             <ResponsiveAppBar />
-            <ExchangesContent setShowAddEmployeeModal={setShowAddEmployeeModal} deleteEmployee={deleteEmployee} list={exchangeCatalog} />
-            {showAddEmployeeModal &&
-                <AddEmployeeModal exchangeCatalog={exchangeCatalog} userList={userList} setShowAddEmployeeModal={setShowAddEmployeeModal} saveEmployee={saveEmployee} />
+            <ExchangesContent setShowAddExchangeModal={setShowAddExchangeModal} setShowExchangeProductModal={setShowExchangeProductModal} list={exchangeCatalog} setPointsCost={setPointsCost} />
+            {showAddExchangeModal &&
+                <AddExchangeModal exchangeCatalog={exchangeCatalog} userList={userList} setShowAddExchangeModal={setShowAddExchangeModal} saveProduct={saveProduct} />
+            }
+            {showExchangeProductModal &&
+                <ExchangeProductModal userList={userList} setShowExchangeProductModal={setShowExchangeProductModal} pointsCost={pointsCost} exchangeProduct={exchangeProduct} />
             }
 
         </>

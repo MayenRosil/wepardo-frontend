@@ -22,7 +22,7 @@ function MediaCard({ title, image, description }) {
       }}
     >
       <CardMedia
-        sx={{ height: 450 }}
+        sx={{ height: 200 }}
         image={image}
         title={title}
       />

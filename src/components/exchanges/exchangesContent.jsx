@@ -14,7 +14,7 @@ import Button from '@mui/material/Button';
 
 
 
-const ExchangesContent = ({ list, setShowAddEmployeeModal, deleteEmployee }) => {
+const ExchangesContent = ({ list, setShowExchangeProductModal, setShowAddExchangeModal, setPointsCost }) => {
 
     const [filteredList, setFilteredList] = useState(list)
     const [filteredText, setFilteredText] = useState("")
@@ -46,7 +46,7 @@ const ExchangesContent = ({ list, setShowAddEmployeeModal, deleteEmployee }) => 
                 maxHeight: 500
             }}
         >
-            <Button color={"primary"} size="small" onClick={() => { setShowAddEmployeeModal(true) }}
+            <Button color={"primary"} size="small" onClick={() => { setShowAddExchangeModal(true) }}
                 variant="contained" style={{ marginRight: 2.5 }}>
                 Agregar producto
             </Button>
@@ -87,7 +87,7 @@ const ExchangesContent = ({ list, setShowAddEmployeeModal, deleteEmployee }) => 
                                 <TableCell align="right">{name}</TableCell>
                                 <TableCell align="right">{points}</TableCell>
                                 <TableCell align="right">
-                                <Button color={"secondary"} size="small" onClick={() => { deleteEmployee(id) }}
+                                <Button color={"secondary"} size="small" onClick={() => { setShowExchangeProductModal(true); setPointsCost(points); }}
                                     variant="contained" style={{ marginRight: 2.5 }}>
                                     Canjear
                                 </Button>

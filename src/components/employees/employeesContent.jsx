@@ -14,7 +14,7 @@ import Button from '@mui/material/Button';
 
 
 
-const EmployeesContent = ({ list, setShowAddEmployeeModal, deleteEmployee }) => {
+const EmployeesContent = ({ list, setShowAddEmployeeModal, deleteEmployee, promoteEmployee }) => {
 
     const [filteredList, setFilteredList] = useState(list)
     const [filteredText, setFilteredText] = useState("")
@@ -95,7 +95,7 @@ const EmployeesContent = ({ list, setShowAddEmployeeModal, deleteEmployee }) => 
                                 <TableCell align="right">{position.positionName}</TableCell>
                                 <TableCell align="right">{position.department.departmentName}</TableCell>
                                 <TableCell align="right">
-                                    <Button color={"secondary"} size="small" onClick={() => { deleteEmployee(id) }}
+                                    <Button color={"secondary"} size="small" onClick={() => { promoteEmployee("modal", id) }}
                                         variant="contained" style={{ marginRight: 2.5 }}>
                                         Ascender
                                     </Button>

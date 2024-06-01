@@ -49,9 +49,9 @@ const cardData = [
     description: "Conoce todos los beneficios por los cuales puedes canjear tus puntos obtenidos por tu buen desempeño como colaborador"
   },
   {
-    title: "Vacaciones",
+    title: "Empleados",
     image: "/Vacaciones.jpeg",
-    description: "Verifica tus periodos de vacaciones disponibles a gozar para planificar tu merecido descanso o solicitar permisos adicionales "
+    description: "Gestiona los empleados de tu empresa, potencia el desarrollo humano y aumenta la retención de personal "
   },
   {
     title: "Registros",

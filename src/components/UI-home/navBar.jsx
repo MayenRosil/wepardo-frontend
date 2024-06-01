@@ -16,7 +16,7 @@ import { useNavigate } from 'react-router-dom';
 
 
 const pages = [{ titulo: 'Catalogo de canje', ruta: '/exchange' }, { titulo: 'Bitácora', ruta: "/logs" }, {titulo: "Empleados", ruta: "/employees"}];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+const settings = ['Logout'];
 
 function ResponsiveAppBar() {
 
@@ -151,7 +151,7 @@ function ResponsiveAppBar() {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                <MenuItem key={setting} onClick={async () => {await localStorage.removeItem('sessionToken'); navigate('/signin')}}>
                   <Typography textAlign="center">{setting}</Typography>
                 </MenuItem>
               ))}

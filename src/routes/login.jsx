@@ -183,9 +183,6 @@ export default function SignInSide() {
                 // Aquí puedes trabajar con los datos obtenidos
                 localStorage.setItem('sessionToken', authToken)
                 navigate('/home')
-                console.log(data);
-                setSnackText(data.message);
-                setShowSnack(true);
             })
             .catch(error => {
                 // Manejar errores

@@ -7,8 +7,14 @@ import CardActions from '@mui/material/CardActions';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
+import { useNavigate } from 'react-router';
 
-function MediaCard({ title, image, description }) {
+
+
+function MediaCard({ title, image, description, action }) {
+
+  const navigate = useNavigate();
+
   return (
     <Card 
       sx={{ 
@@ -35,34 +41,43 @@ function MediaCard({ title, image, description }) {
         </Typography>
       </CardContent>
       <CardActions>
-        <Button size="small">Mas información</Button>
+        <Button onClick={() => navigate(action)} size="small">Visitar módulo</Button>
       </CardActions>
     </Card>
   );
 }
 
 
-const cardData = [
-  {
-    title: "Canje de puntos",
-    image: "/travel.jpeg",
-    description: "Conoce todos los beneficios por los cuales puedes canjear tus puntos obtenidos por tu buen desempeño como colaborador"
-  },
-  {
-    title: "Empleados",
-    image: "/Vacaciones.jpeg",
-    description: "Gestiona los empleados de tu empresa, potencia el desarrollo humano y aumenta la retención de personal "
-  },
-  {
-    title: "Registros",
-    image: "/Register.jpg",
-    description: "Visualiza tus registros de ingreso a la empresa para comprobar el cumplimiento de tu horario y registro de tus biometricos    "
-  },
-  
-];
+
 
 
 function CardContainer() {
+
+  
+const navigate = useNavigate();
+
+  const cardData = [
+    {
+      title: "Canje de puntos",
+      image: "/travel.jpeg",
+      description: "Conoce todos los beneficios por los cuales puedes canjear tus puntos obtenidos por tu buen desempeño como colaborador",
+      action: '/exchange'
+    },
+    {
+      title: "Empleados",
+      image: "/Vacaciones.jpeg",
+      description: "Gestiona los empleados de tu empresa, potencia el desarrollo humano y aumenta la retención de personal ",
+      action: '/employees'
+    },
+    {
+      title: "Registros",
+      image: "/Register.jpg",
+      description: "Visualiza tus registros de ingreso a la empresa para comprobar el cumplimiento de tu horario y registro de tus biometricos    ",
+      action: '/logs'
+    },
+    
+  ];
+
   return (
     <Box sx={{ flexGrow: 1, p: 2, }} >
       <Grid container spacing={2} justifyContent={"center"}  >
@@ -72,6 +87,7 @@ function CardContainer() {
               title={card.title} 
               image={card.image} 
               description={card.description} 
+              action={card.action}
             />
           </Grid>
         ))}

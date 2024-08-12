@@ -18,14 +18,13 @@ import Modal from '@mui/material/Modal';
 import { useNavigate } from 'react-router-dom';
 
 
-const style = {
+const modalStyle = {
     position: 'absolute',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: 400,
     bgcolor: 'background.paper',
-    border: '2px solid #000',
     boxShadow: 24,
     p: 4,
 };
@@ -51,22 +50,28 @@ const defaultTheme = createTheme();
 
 
 export default function SignInSide() {
-    
+
     const navigate = useNavigate();
+
+
+    const [userUsername, setUserUsername] = useState("");
+    const [userPassword, setUserPassword] = useState("");
+    const [authToken, setAuthToken] = useState(null);
+    const [recoveryEmail, setRecoveryEmail] = useState("");
+    const [recoveryCode, setRecoveryCode] = useState("");
+    const [newPassword, setNewPassword] = useState("");
 
     const [solicitarFoto, setSolicitarFoto] = useState(false);
     const [imagenExiste, setImagenExiste] = useState(false);
-    const [userUsername, setUserUsername] = useState("");
-    const [userPassword, setUserPassword] = useState("");
     const [showSnack, setShowSnack] = useState(false);
     const [snackText, setSnackText] = useState("");
     const [showPasswordModal, setShowPasswordModal] = useState(false);
+    const [showPasswordRecovery, setShowPasswordRecovery] = useState(false);
 
-    const [authToken, setAuthToken] = useState(null);
 
 
     const handleOpenModal = () => setShowPasswordModal(true);
-    const handleCloseModal = () => setShowPasswordModal(false);
+    const handleCloseModal = () => { setShowPasswordModal(false); setShowPasswordRecovery(false); setRecoveryEmail(""); setNewPassword(""); setRecoveryCode(""); }
 
     const handleClosePhoto = () => setSolicitarFoto(false);
 
@@ -133,6 +138,7 @@ export default function SignInSide() {
                 // Aquí puedes trabajar con los datos obtenidos
                 console.log(data);
                 if (data.errorCode == 0) {
+                    localStorage.setItem('sessionToken', data.token)
                     setAuthToken(data.token)
                     if (data.imageExist) setImagenExiste(true);
                     setSolicitarFoto(true);
@@ -146,9 +152,7 @@ export default function SignInSide() {
                 console.error('Ocurrió un error:', error);
                 setSnackText('Error inesperado');
                 setShowSnack(true);
-            });
-
-
+            })
     }
 
     const uploadPhoto = async (imageData) => {
@@ -178,9 +182,7 @@ export default function SignInSide() {
             .then(data => {
                 // Aquí puedes trabajar con los datos obtenidos
                 localStorage.setItem('sessionToken', authToken)
-                console.log(data);
-                setSnackText(data.message);
-                setShowSnack(true);
+                navigate('/home')
             })
             .catch(error => {
                 // Manejar errores
@@ -188,7 +190,108 @@ export default function SignInSide() {
                 setSnackText('Error inesperado');
                 setShowSnack(true);
             });
+    }
 
+
+    const sendRecoveryCode = async () => {
+        if (recoveryEmail == "") {
+            setSnackText("Ingresa email")
+            toggleSnack(true)
+            return;
+        }
+
+        let cuerpo = {
+            email: recoveryEmail,
+        }
+        fetch('https://wepardo.services/api/password/recover', {
+            method: 'PATCH',
+            mode: 'cors',
+            cache: 'no-cache',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(cuerpo)
+        })
+            .then(response => {
+                if (!response.ok) {
+                    setSnackText("La solicitud falló");
+                    setShowSnack(true);
+                    throw new Error('La solicitud falló');
+                }
+                return response.json(); // Convertir la respuesta a formato JSON
+            })
+            .then(data => {
+                // Aquí puedes trabajar con los datos obtenidos
+                console.log(data);
+                if (data.errorCode == 0) {
+                    setShowPasswordRecovery(true)
+                    setSnackText('Codigo enviado');
+                    setShowSnack(true);
+                } else {
+                    setSnackText(data.message);
+                    setShowSnack(true);
+                }
+            })
+            .catch(error => {
+                // Manejar errores
+                console.error('Ocurrió un error:', error);
+                setSnackText('Error inesperado');
+                setShowSnack(true);
+            })
+    }
+
+    const validateRecoveryCode = async () => {
+        if (recoveryCode == "") {
+            setSnackText("Ingresa codigo")
+            toggleSnack(true)
+            return;
+        }
+        if (newPassword == "") {
+            setSnackText("Ingresa clave")
+            toggleSnack(true)
+            return;
+        }
+
+        let cuerpo = {
+            verificationCode: recoveryCode,
+            email: recoveryEmail,
+            password: newPassword
+        }
+        fetch('https://wepardo.services/api/password/verify', {
+            method: 'PATCH',
+            mode: 'cors',
+            cache: 'no-cache',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(cuerpo)
+        })
+            .then(response => {
+                if (!response.ok) {
+                    setSnackText("La solicitud falló");
+                    setShowSnack(true);
+                    throw new Error('La solicitud falló');
+                }
+                return response.json(); // Convertir la respuesta a formato JSON
+            })
+            .then(data => {
+                // Aquí puedes trabajar con los datos obtenidos
+                console.log(data);
+                if (data.errorCode == 0) {
+                    handleCloseModal();
+                    setSnackText(data.message);
+                    setShowSnack(true);
+                } else {
+                    setSnackText(data.message);
+                    setShowSnack(true);
+                }
+            })
+            .catch(error => {
+                // Manejar errores
+                console.error('Ocurrió un error:', error);
+                setSnackText('Error inesperado');
+                setShowSnack(true);
+            })
     }
 
     return (
@@ -256,10 +359,10 @@ export default function SignInSide() {
                                             margin="normal"
                                             required
                                             fullWidth
-                                            id="email"
+                                            id="username"
                                             label="Username"
-                                            name="email"
-                                            autoComplete="email"
+                                            name="username"
+                                            autoComplete="username"
                                             autoFocus
                                             value={userUsername}
                                             onChange={(e) => { setUserUsername(e.target.value) }}
@@ -296,7 +399,7 @@ export default function SignInSide() {
                                                 <Button
                                                     type="submit"
                                                     fullWidth
-                                                    variant="contained"
+                                                    variant="outlined"
                                                     sx={{ mt: 3, mb: 2 }}
                                                     onClick={
                                                         handleOpenModal
@@ -324,13 +427,93 @@ export default function SignInSide() {
                         aria-labelledby="modal-modal-title"
                         aria-describedby="modal-modal-description"
                     >
-                        <Box sx={style}>
-                            <Typography id="modal-modal-title" variant="h6" component="h2">
-                                Text in a modal
+                        <Box sx={modalStyle}>
+
+                            <Typography component="h1" variant="h5">
+                                Recover your password
                             </Typography>
-                            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                                Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-                            </Typography>
+                            {!showPasswordRecovery ?
+                                <Box component="form" noValidate onSubmit={(e) => e.preventDefault()} sx={{ mt: 1 }}>
+                                    <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                                        Type your registered email. You'll receive a verification code.
+                                    </Typography>
+                                    <TextField
+                                        margin="normal"
+                                        required
+                                        fullWidth
+                                        id="email"
+                                        label="Email"
+                                        name="email"
+                                        autoComplete="email"
+                                        autoFocus
+                                        value={recoveryEmail}
+                                        onChange={(e) => { setRecoveryEmail(e.target.value) }}
+                                    />
+
+                                    <Button
+                                        type="submit"
+                                        fullWidth
+                                        variant="contained"
+                                        sx={{ mt: 3, mb: 2 }}
+                                        onClick={(e) => {
+                                            sendRecoveryCode();
+                                        }}
+                                    >
+                                        Send code
+                                    </Button>
+                                </Box>
+                                :
+                                <Box component="form" noValidate onSubmit={(e) => e.preventDefault()} sx={{ mt: 1 }}>
+                                    <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                                        Type the code you have received at your email address.
+                                    </Typography>
+                                    <TextField
+                                        margin="normal"
+                                        required
+                                        fullWidth
+                                        id="verificationCode"
+                                        label="Verification code"
+                                        name="verificationCode"
+                                        autoComplete="verificationCode"
+                                        value={recoveryCode}
+                                        onChange={(e) => { setRecoveryCode(e.target.value) }}
+                                    />
+                                    <TextField
+                                        margin="normal"
+                                        required
+                                        fullWidth
+                                        name="newPassword"
+                                        label="New password"
+                                        type="password"
+                                        id="newPassword"
+                                        autoComplete="current-password"
+                                        value={newPassword}
+                                        onChange={(e) => { setNewPassword(e.target.value) }}
+                                    />
+                                    <Button
+                                        type="submit"
+                                        fullWidth
+                                        variant="contained"
+                                        sx={{ mt: 3, mb: 2 }}
+                                        onClick={(e) => {
+                                            validateRecoveryCode();
+                                        }}
+                                    >
+                                        Validate code
+                                    </Button>
+                                    <Button
+                                        type="submit"
+                                        fullWidth
+                                        variant="outlined"
+                                        sx={{ mt: 0, mb: 0 }}
+                                        onClick={(e) => {
+                                            sendRecoveryCode();
+                                        }}
+                                    >
+                                        Re-Send code
+                                    </Button>
+                                </Box>
+                            }
                         </Box>
                     </Modal>
 

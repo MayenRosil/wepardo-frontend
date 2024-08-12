@@ -6,6 +6,9 @@ import {
   } from "react-router-dom";
   
   import Root from "./routes/root";
+import Logs from "./routes/logs";
+import Employees from "./routes/employees";
+import Exchange from "./routes/exchange";
   
   const router = createBrowserRouter([
     {
@@ -19,6 +22,18 @@ import {
     {
         path: '/home',
         element: <Home />
+    },
+    {
+        path: '/logs',
+        element: <Logs />
+    },
+    {
+        path: '/employees',
+        element: <Employees />
+    },
+    {
+        path: '/exchange',
+        element: <Exchange />
     }
   ]);
 

@@ -103,6 +103,11 @@ export default function SignInSide() {
 
     const signIn = () => {
 
+        if (userCompany == "") {
+            setSnackText("Ingresa empresa")
+            toggleSnack(true)
+            return;
+        }
         if (userUsername == "") {
             setSnackText("Ingresa usuario")
             toggleSnack(true)

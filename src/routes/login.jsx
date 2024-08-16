@@ -56,6 +56,7 @@ export default function SignInSide() {
 
     const [userUsername, setUserUsername] = useState("");
     const [userPassword, setUserPassword] = useState("");
+    const [userCompany, setUserCompany] = useState("");
     const [authToken, setAuthToken] = useState(null);
     const [recoveryEmail, setRecoveryEmail] = useState("");
     const [recoveryCode, setRecoveryCode] = useState("");
@@ -115,7 +116,8 @@ export default function SignInSide() {
 
         let cuerpo = {
             username: userUsername,
-            password: userPassword
+            password: userPassword,
+            company: userCompany
         }
         fetch('https://wepardo.services/api/auth', {
             method: 'POST',
@@ -355,6 +357,18 @@ export default function SignInSide() {
                                         Sign in
                                     </Typography>
                                     <Box component="form" noValidate onSubmit={(e) => e.preventDefault()} sx={{ mt: 1 }}>
+                                        <TextField
+                                            margin="normal"
+                                            required
+                                            fullWidth
+                                            id="company"
+                                            label="Company"
+                                            name="company"
+                                            autoComplete="company"
+                                            autoFocus
+                                            value={userCompany}
+                                            onChange={(e) => { setUserCompany(e.target.value) }}
+                                        />
                                         <TextField
                                             margin="normal"
                                             required

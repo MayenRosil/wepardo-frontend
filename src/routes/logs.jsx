@@ -47,7 +47,7 @@ const Logs = () => {
 
 
     const getLogs = async (token) => {
-        await fetch('https://wepardo.services/api/logs', {
+        await fetch('http://localhost:3001/api/logs', {
             method: 'GET',
             mode: 'cors',
             cache: 'no-cache',

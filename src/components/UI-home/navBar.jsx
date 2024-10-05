@@ -15,7 +15,7 @@ import Grid from '@mui/material/Grid';
 import { useNavigate } from 'react-router-dom';
 
 
-const pages = [{ titulo: 'Catalogo de canje', ruta: '/exchange' }, { titulo: 'Bitácora', ruta: "/logs" }, {titulo: "Empleados", ruta: "/employees"}];
+const pages = [{ titulo: 'Catálogo de Productos', ruta: '/exchange' }, { titulo: 'Bitácora', ruta: "/logs" }, {titulo: "Empleados", ruta: "/employees"}];
 const settings = ['Logout'];
 
 function ResponsiveAppBar() {

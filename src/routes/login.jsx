@@ -58,9 +58,12 @@ export default function SignInSide() {
     const [userPassword, setUserPassword] = useState("");
     const [userCompany, setUserCompany] = useState("");
     const [authToken, setAuthToken] = useState(null);
+
     const [recoveryEmail, setRecoveryEmail] = useState("");
     const [recoveryCode, setRecoveryCode] = useState("");
     const [newPassword, setNewPassword] = useState("");
+
+    const [employeeData, setEmployeeData] = useState(null);
 
     const [solicitarFoto, setSolicitarFoto] = useState(false);
     const [imagenExiste, setImagenExiste] = useState(false);
@@ -68,10 +71,13 @@ export default function SignInSide() {
     const [snackText, setSnackText] = useState("");
     const [showPasswordModal, setShowPasswordModal] = useState(false);
     const [showPasswordRecovery, setShowPasswordRecovery] = useState(false);
+    const [showRegisterModal, setShowRegisterModal] = useState(false);
 
 
 
     const handleOpenModal = () => setShowPasswordModal(true);
+    const handleOpenRegisterModal = () => setShowRegisterModal(true);
+    const handleCloseRegisterModal = () => {setShowRegisterModal(false); setShowPasswordRecovery(false); setRecoveryEmail(""); setNewPassword(""); setRecoveryCode(""); setUserCompany(""); setUserUsername(""); setUserPassword(""); setEmployeeData(""); };
     const handleCloseModal = () => { setShowPasswordModal(false); setShowPasswordRecovery(false); setRecoveryEmail(""); setNewPassword(""); setRecoveryCode(""); }
 
     const handleClosePhoto = () => setSolicitarFoto(false);
@@ -124,7 +130,7 @@ export default function SignInSide() {
             password: userPassword,
             company: userCompany
         }
-        fetch('https://wepardo.services/api/auth', {
+        fetch('http://localhost:3001/api/auth', {
             method: 'POST',
             mode: 'cors',
             cache: 'no-cache',
@@ -147,8 +153,12 @@ export default function SignInSide() {
                 if (data.errorCode == 0) {
                     localStorage.setItem('sessionToken', data.token)
                     setAuthToken(data.token)
-                    if (data.imageExist) setImagenExiste(true);
-                    setSolicitarFoto(true);
+                    // SE DESACTIVA TEMPORALMENTE LA AUTENTICACION BIOMETRICA
+                    //if (data.imageExist) setImagenExiste(true);
+                    //setSolicitarFoto(true);
+                    
+                localStorage.setItem('sessionToken', data.token)
+                navigate('/home')
                 } else {
                     setSnackText(data.message);
                     setShowSnack(true);
@@ -169,7 +179,7 @@ export default function SignInSide() {
             exist: imagenExiste
         }
         console.log(cuerpo)
-        await fetch('https://wepardo.services/api/auth/uploadImage', {
+        await fetch('http://localhost:3001/api/auth/uploadImage', {
             method: 'POST',
             mode: 'cors',
             headers: {
@@ -210,7 +220,7 @@ export default function SignInSide() {
         let cuerpo = {
             email: recoveryEmail,
         }
-        fetch('https://wepardo.services/api/password/recover', {
+        fetch('http://localhost:3001/api/password/recover', {
             method: 'PATCH',
             mode: 'cors',
             cache: 'no-cache',
@@ -264,7 +274,7 @@ export default function SignInSide() {
             email: recoveryEmail,
             password: newPassword
         }
-        fetch('https://wepardo.services/api/password/verify', {
+        fetch('http://localhost:3001/api/password/verify', {
             method: 'PATCH',
             mode: 'cors',
             cache: 'no-cache',
@@ -301,6 +311,80 @@ export default function SignInSide() {
             })
     }
 
+    const createNewAccount = async () => {
+        if (userCompany == "") {
+            setSnackText("Ingresa empresa")
+            toggleSnack(true)
+            return;
+        }
+        if (userUsername == "") {
+            setSnackText("Ingresa usuario")
+            toggleSnack(true)
+            return;
+        }
+        if (userPassword == "") {
+            setSnackText("Ingresa clave")
+            toggleSnack(true)
+            return;
+        }
+        
+        if (recoveryEmail == "") {
+            setSnackText("Ingresa correo")
+            toggleSnack(true)
+            return;
+        }
+        
+        if (employeeData == "") {
+            setSnackText("Ingresa código de empleado")
+            toggleSnack(true)
+            return;
+        }
+
+        let cuerpo = {
+            username: userUsername,
+            password: userPassword,
+            company: userCompany,
+            email: recoveryEmail,
+            employee: employeeData,
+            role: 1
+        }
+        fetch('http://localhost:3001/api/users', {
+            method: 'POST',
+            mode: 'cors',
+            cache: 'no-cache',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(cuerpo)
+        })
+            .then(response => {
+                if (!response.ok) {
+                    setSnackText("La solicitud falló");
+                    setShowSnack(true);
+                    throw new Error('La solicitud falló');
+                }
+                return response.json(); // Convertir la respuesta a formato JSON
+            })
+            .then(data => {
+                // Aquí puedes trabajar con los datos obtenidos
+                console.log(data);
+                if (data.errorCode == 0) {
+                    handleCloseRegisterModal();
+                    setSnackText(data.message);
+                    setShowSnack(true);
+                } else {
+                    setSnackText(data.message);
+                    setShowSnack(true);
+                }
+            })
+            .catch(error => {
+                // Manejar errores
+                console.error('Ocurrió un error:', error);
+                setSnackText('Error inesperado');
+                setShowSnack(true);
+            })
+    }
+
     return (
         <ThemeProvider theme={defaultTheme}>
 
@@ -314,7 +398,7 @@ export default function SignInSide() {
                         onClose={handleClose}
                         message={snackText}
                         action={action}
-
+                        id='snackAlert'
                         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                     />
                     {solicitarFoto ?
@@ -358,9 +442,6 @@ export default function SignInSide() {
                                     <Grid item sx={{ m: 1, bgcolor: 'secondary' }}>
                                         <img src="/Chetah.svg" alt="My Icon" />
                                     </Grid>
-                                    <Typography component="h1" variant="h5">
-                                        Sign in
-                                    </Typography>
                                     <Box component="form" noValidate onSubmit={(e) => e.preventDefault()} sx={{ mt: 1 }}>
                                         <TextField
                                             margin="normal"
@@ -370,7 +451,7 @@ export default function SignInSide() {
                                             label="Company"
                                             name="company"
                                             autoComplete="company"
-                                            autoFocus
+
                                             value={userCompany}
                                             onChange={(e) => { setUserCompany(e.target.value) }}
                                         />
@@ -382,7 +463,7 @@ export default function SignInSide() {
                                             label="Username"
                                             name="username"
                                             autoComplete="username"
-                                            autoFocus
+
                                             value={userUsername}
                                             onChange={(e) => { setUserUsername(e.target.value) }}
                                         />
@@ -410,6 +491,7 @@ export default function SignInSide() {
                                             onClick={(e) => {
                                                 signIn();
                                             }}
+                                            id='signInButton'
                                         >
                                             Sign In
                                         </Button>
@@ -427,11 +509,20 @@ export default function SignInSide() {
                                                     Forgot password?
                                                 </Button>
                                             </Grid>
-                                            {/* <Grid item>
-                                                <Link href="#" variant="body2">
-                                                    {"Don't have an account? Sign Up"}
-                                                </Link>
-                                            </Grid> */}
+                                            <Grid item >
+                                                <Button
+                                                    type="submit"
+                                                    fullWidth
+                                                    id='registerButton'
+                                                    variant="text"
+                                                    sx={{ mt: 1, mb: 5 }}
+                                                    onClick={(e) => {
+                                                        handleOpenRegisterModal();
+                                                    }}
+                                                >
+                                                    Create account
+                                                </Button>
+                                            </Grid>
                                         </Grid>
                                         <Copyright sx={{ mt: 5 }} />
                                     </Box>
@@ -464,7 +555,7 @@ export default function SignInSide() {
                                         label="Email"
                                         name="email"
                                         autoComplete="email"
-                                        autoFocus
+
                                         value={recoveryEmail}
                                         onChange={(e) => { setRecoveryEmail(e.target.value) }}
                                     />
@@ -533,6 +624,103 @@ export default function SignInSide() {
                                     </Button>
                                 </Box>
                             }
+                        </Box>
+                    </Modal>
+
+
+                    <Modal
+                        open={showRegisterModal}
+                        onClose={handleCloseRegisterModal}
+                        aria-labelledby="modal-modal-title"
+                        aria-describedby="modal-modal-description"
+                        id='signUpModal'
+                    >
+                        <Box sx={modalStyle}>
+
+                            <Typography component="h1" variant="h5">
+                                Create your account
+                            </Typography>
+                                <Box component="form" noValidate onSubmit={(e) => e.preventDefault()} sx={{ mt: 1 }}>
+                                    <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                                        Fill the form with your data.
+                                    </Typography>
+
+                                    <TextField
+                                        margin="normal"
+                                        required
+                                        fullWidth
+                                        id="companyRegister"
+                                        label="Company"
+                                        name="company"
+                                        autoComplete="company"
+
+                                        value={userCompany}
+                                        onChange={(e) => { setUserCompany(e.target.value) }}
+                                    />
+                                    <TextField
+                                        margin="normal"
+                                        required
+                                        fullWidth
+                                        id="usernameRegister"
+                                        label="Username"
+                                        name="username"
+                                        autoComplete="username"
+
+                                        value={userUsername}
+                                        onChange={(e) => { setUserUsername(e.target.value) }}
+                                    />
+                                    <TextField
+                                        margin="normal"
+                                        required
+                                        fullWidth
+                                        name="password"
+                                        label="Password"
+                                        type="password"
+                                        id="passwordRegister"
+                                        autoComplete="current-password"
+                                        value={userPassword}
+                                        onChange={(e) => { setUserPassword(e.target.value) }}
+                                    />
+                                    <TextField
+                                        margin="normal"
+                                        required
+                                        fullWidth
+                                        id="emailRegister"
+                                        label="Email"
+                                        name="email"
+                                        autoComplete="email"
+
+                                        value={recoveryEmail}
+                                        onChange={(e) => { setRecoveryEmail(e.target.value) }}
+                                    />
+
+                                    <TextField
+                                        margin="normal"
+                                        required
+                                        fullWidth
+                                        id="employeeRegister"
+                                        label="Employee code"
+                                        name="employee"
+                                        autoComplete="employee"
+
+                                        value={employeeData}
+                                        onChange={(e) => { setEmployeeData(e.target.value) }}
+                                    />
+
+                                    <Button
+                                        type="submit"
+                                        fullWidth
+                                        id='btnCreateAccount'
+                                        variant="contained"
+                                        sx={{ mt: 3, mb: 2 }}
+                                        onClick={(e) => {
+                                            createNewAccount();
+                                        }}
+                                    >
+                                        Create account
+                                    </Button>
+                                </Box>
+                               
                         </Box>
                     </Modal>
 

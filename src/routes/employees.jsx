@@ -96,7 +96,7 @@ const Employees = () => {
 
         if (action === "save") {
             console.log(employeeId, positionId)
-            await fetch(`https://wepardo.services/api/employee`, {
+            await fetch(`http://localhost:3001/api/employee`, {
                 method: 'PATCH',
                 mode: 'cors',
                 cache: 'no-cache',
@@ -135,7 +135,7 @@ const Employees = () => {
     }
 
     const getUsers = async (token) => {
-        await fetch('https://wepardo.services/api/users', {
+        await fetch('http://localhost:3001/api/users', {
             method: 'GET',
             mode: 'cors',
             cache: 'no-cache',
@@ -170,7 +170,7 @@ const Employees = () => {
     }
 
     const getPositions = async (token) => {
-        await fetch('https://wepardo.services/api/position', {
+        await fetch('http://localhost:3001/api/position', {
             method: 'GET',
             mode: 'cors',
             cache: 'no-cache',
@@ -205,7 +205,7 @@ const Employees = () => {
     }
 
     const getEmployees = async (token) => {
-        await fetch('https://wepardo.services/api/employee', {
+        await fetch('http://localhost:3001/api/employee', {
             method: 'GET',
             mode: 'cors',
             cache: 'no-cache',
@@ -240,7 +240,7 @@ const Employees = () => {
     }
 
     const saveEmployee = async (data) => {
-        await fetch('https://wepardo.services/api/employee', {
+        await fetch('http://localhost:3001/api/employee', {
             method: 'POST',
             mode: 'cors',
             cache: 'no-cache',
@@ -279,7 +279,7 @@ const Employees = () => {
 
     const deleteEmployee = async (id) => {
         setDeleteButtonPressed(!deleteButtonPressed)
-        await fetch(`https://wepardo.services/api/employee/${id}`, {
+        await fetch(`http://localhost:3001/api/employee/${id}`, {
             method: 'DELETE',
             mode: 'cors',
             cache: 'no-cache',

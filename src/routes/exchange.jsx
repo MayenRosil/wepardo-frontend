@@ -58,7 +58,7 @@ const Exchange = () => {
     }, [showAddExchangeModal])
 
     const getUsers = async (token) => {
-        await fetch('https://wepardo.services/api/users', {
+        await fetch('http://localhost:3001/api/users', {
             method: 'GET',
             mode: 'cors',
             cache: 'no-cache',
@@ -93,7 +93,7 @@ const Exchange = () => {
     }
 
     const getExchangeCatalog = async (token) => {
-        await fetch('https://wepardo.services/api/exchange', {
+        await fetch('http://localhost:3001/api/product', {
             method: 'GET',
             mode: 'cors',
             cache: 'no-cache',
@@ -113,7 +113,7 @@ const Exchange = () => {
                 // Aquí puedes trabajar con los datos obtenidos
                 console.log(data);
                 if (data.errorCode == 0) {
-                    setExchangeCatalog(data.exchangeCatalog)
+                    setExchangeCatalog(data.products)
                 } else {
                     setSnackText(data.message);
                     setShowSnack(true);
@@ -128,7 +128,7 @@ const Exchange = () => {
     }
 
     const saveProduct = async (data) => {
-        await fetch('https://wepardo.services/api/exchange', {
+        await fetch('http://localhost:3001/api/exchange', {
             method: 'POST',
             mode: 'cors',
             cache: 'no-cache',
@@ -167,7 +167,7 @@ const Exchange = () => {
 
     const exchangeProduct = async (body) => {
         console.log(body)
-        await fetch(`https://wepardo.services/api/exchange`, {
+        await fetch(`http://localhost:3001/api/exchange`, {
             method: 'PATCH',
             mode: 'cors',
             cache: 'no-cache',

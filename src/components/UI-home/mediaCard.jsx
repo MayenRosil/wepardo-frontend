@@ -58,7 +58,7 @@ const navigate = useNavigate();
 
   const cardData = [
     {
-      title: "Canje de puntos",
+      title: "Catálogo de productos",
       image: "/travel.jpeg",
       description: "Conoce todos los beneficios por los cuales puedes canjear tus puntos obtenidos por tu buen desempeño como colaborador",
       action: '/exchange'

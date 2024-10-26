@@ -75,6 +75,12 @@ const navigate = useNavigate();
       description: "Visualiza tus registros de ingreso a la empresa para comprobar el cumplimiento de tu horario y registro de tus biometricos    ",
       action: '/logs'
     },
+    {
+      title: "Usuarios",
+      image: "/Personas.png",
+      description: "Gestiona los usuarios de la plataforma, dales puntos por su desempeño ",
+      action: '/users'
+    },
     
   ];
 

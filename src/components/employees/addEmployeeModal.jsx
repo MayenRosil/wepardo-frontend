@@ -69,7 +69,7 @@ const addEmployeeReducer = (addEmployeeState, action) => {
 }
 
 
-const AddEmployeeModal = ({ setShowAddEmployeeModal, positionList, userList, saveEmployee }) => {
+const AddEmployeeModal = ({ setShowAddEmployeeModal, positionList, saveEmployee }) => {
 
     const [addEmployeeState, dispatch] = useReducer(addEmployeeReducer, addEmployeeInitialState);
 
@@ -163,21 +163,6 @@ const AddEmployeeModal = ({ setShowAddEmployeeModal, positionList, userList, sav
                             value={addEmployeeState.NIT}
                             onChange={(e) => { dispatch({ type: 'addNIT', payload: e.target.value }) }}
                         />
-
-                        <InputLabel id="demo-simple-select-label">User</InputLabel>
-                        <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            value={addEmployeeState.user}
-                            label="User"
-                            onChange={(e) => dispatch({ type: 'addUser', payload: e.target.value })}
-                        >
-                            {userList.map((usr, idx) => {
-                                return (
-                                    <MenuItem value={usr.id}>{usr.username}</MenuItem>
-                                )
-                            })}
-                        </Select>
 
                         <InputLabel id="demo-simple-select-label">Position</InputLabel>
                         <Select

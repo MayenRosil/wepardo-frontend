@@ -6,7 +6,7 @@ require('chromedriver');
   let driver = await new Builder().forBrowser('chrome').build();
 
   // Datos de prueba
-  const USERNAME = 'mayenrosil';
+  const USERNAME = '123456';
   const COMPANY = '1';
   const PASSWORD = '12345';
 

@@ -9,6 +9,7 @@ import {
 import Logs from "./routes/logs";
 import Employees from "./routes/employees";
 import Exchange from "./routes/exchange";
+import Users from "./routes/users";
   
   const router = createBrowserRouter([
     {
@@ -34,6 +35,10 @@ import Exchange from "./routes/exchange";
     {
         path: '/exchange',
         element: <Exchange />
+    },
+    {
+        path: '/users',
+        element: <Users />
     }
   ]);
 

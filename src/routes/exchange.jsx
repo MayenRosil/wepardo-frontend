@@ -128,7 +128,7 @@ const Exchange = () => {
     }
 
     const saveProduct = async (data) => {
-        await fetch('http://localhost:3001/api/exchange', {
+        await fetch('http://localhost:3001/api/product', {
             method: 'POST',
             mode: 'cors',
             cache: 'no-cache',

@@ -5,7 +5,7 @@ import ResponsiveAppBar from '../components/UI-home/navBar';
 import LogsContent from '../components/logs/logsContent';
 import Snackbar from '@mui/material/Snackbar';
 import Button from '@mui/material/Button';
-import EmployeesContent from '../components/employees/employeesContent';
+import UsersContent from '../components/users/usersContent';
 import Modal from '@mui/material/Modal';
 import AddEmployeeModal from '../components/employees/addEmployeeModal';
 
@@ -29,7 +29,7 @@ const modalStyle = {
     overflowY: 'scroll'
 };
 
-const Employees = () => {
+const Users = () => {
 
     const navigate = useNavigate();
 
@@ -39,7 +39,6 @@ const Employees = () => {
     const [showAddEmployeeModal, setShowAddEmployeeModal] = useState(false);
 
     const [recordList, setRecordList] = useState([])
-    const [positionList, setPositionList] = useState([])
 
     const [authToken, setAuthToken] = useState("")
     const [deleteButtonPressed, setDeleteButtonPressed] = useState(false)
@@ -74,9 +73,8 @@ const Employees = () => {
         if (sessionToken) {
             setAuthToken(sessionToken);
             getEmployees(sessionToken);
-            if (positionList.length >= 0) getPositions(sessionToken);
         };
-    }, [showAddEmployeeModal, deleteButtonPressed])
+    }, [deleteButtonPressed])
 
     useEffect(() => {
         const sessionToken = (localStorage.getItem('sessionToken'));
@@ -132,43 +130,10 @@ const Employees = () => {
         }
     }
 
-    const getPositions = async (token) => {
-        await fetch('http://localhost:3001/api/position', {
-            method: 'GET',
-            mode: 'cors',
-            cache: 'no-cache',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-        })
-            .then(response => {
-                if (!response.ok) {
-                    setSnackText("La solicitud falló");
-                    setShowSnack(true);
-                }
-                return response.json(); // Convertir la respuesta a formato JSON
-            })
-            .then(data => {
-                // Aquí puedes trabajar con los datos obtenidos
-                console.log(data);
-                if (data.errorCode == 0) {
-                    setPositionList(data.positions)
-                } else {
-                    setSnackText(data.message);
-                    setShowSnack(true);
-                }
-            })
-            .catch(error => {
-                // Manejar errores
-                console.error('Ocurrió un error:', error);
-                setSnackText('Error inesperado');
-                setShowSnack(true);
-            })
-    }
+   
 
     const getEmployees = async (token) => {
-        await fetch('http://localhost:3001/api/employee', {
+        await fetch('http://localhost:3001/api/users', {
             method: 'GET',
             mode: 'cors',
             cache: 'no-cache',
@@ -188,7 +153,7 @@ const Employees = () => {
                 // Aquí puedes trabajar con los datos obtenidos
                 console.log(data);
                 if (data.errorCode == 0) {
-                    setRecordList(data.employees)
+                    setRecordList(data.users)
                 } else {
                     setSnackText(data.message);
                     setShowSnack(true);
@@ -202,81 +167,8 @@ const Employees = () => {
             })
     }
 
-    const saveEmployee = async (data) => {
-        await fetch('http://localhost:3001/api/employee', {
-            method: 'POST',
-            mode: 'cors',
-            cache: 'no-cache',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${authToken}`
-            },
-            body: JSON.stringify(data)
-        })
-            .then(response => {
-                if (!response.ok) {
-                    setSnackText("La solicitud falló");
-                    setShowSnack(true);
-                }
-                return response.json(); // Convertir la respuesta a formato JSON
-            })
-            .then(data => {
-                // Aquí puedes trabajar con los datos obtenidos
-                console.log(data);
-                if (data.errorCode == 0) {
-                    setSnackText(data.message);
-                    setShowSnack(true);
-                    setShowAddEmployeeModal(false);
-                } else {
-                    setSnackText(data.message);
-                    setShowSnack(true);
-                }
-            })
-            .catch(error => {
-                // Manejar errores
-                console.error('Ocurrió un error:', error);
-                setSnackText('Error inesperado');
-                setShowSnack(true);
-            })
-    }
 
-    const deleteEmployee = async (id) => {
-        setDeleteButtonPressed(!deleteButtonPressed)
-        await fetch(`http://localhost:3001/api/employee/${id}`, {
-            method: 'DELETE',
-            mode: 'cors',
-            cache: 'no-cache',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${authToken}`
-            },
-        })
-            .then(response => {
-                if (!response.ok) {
-                    setSnackText("La solicitud falló");
-                    setShowSnack(true);
-                }
-                return response.json(); // Convertir la respuesta a formato JSON
-            })
-            .then(data => {
-                // Aquí puedes trabajar con los datos obtenidos
-                console.log(data);
-                if (data.errorCode == 0) {
-                    setSnackText(data.message);
-                    setShowSnack(true);
-                    setShowAddEmployeeModal(false);
-                } else {
-                    setSnackText(data.message);
-                    setShowSnack(true);
-                }
-            })
-            .catch(error => {
-                // Manejar errores
-                console.error('Ocurrió un error:', error);
-                setSnackText('Error inesperado');
-                setShowSnack(true);
-            })
-    }
+
 
     return (
         <>
@@ -290,10 +182,8 @@ const Employees = () => {
                 anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
             />
             <ResponsiveAppBar />
-            <EmployeesContent promoteEmployee={promoteEmployee} setShowAddEmployeeModal={setShowAddEmployeeModal} deleteEmployee={deleteEmployee} list={recordList} />
-            {showAddEmployeeModal &&
-                <AddEmployeeModal positionList={positionList} setShowAddEmployeeModal={setShowAddEmployeeModal} saveEmployee={saveEmployee} />
-            }
+            <UsersContent promoteEmployee={promoteEmployee}  list={recordList} />
+
 
             {showPromoteEmployeeModal &&
                 <Modal
@@ -316,20 +206,7 @@ const Employees = () => {
                                     Select the new position.
                                 </Typography>
 
-                                <InputLabel id="demo-simple-select-label">Position</InputLabel>
-                                <Select
-                                    labelId="demo-simple-select-label"
-                                    id="demo-simple-select"
-                                    value={newSelectedPosition.positionId}
-                                    label="Position"
-                                    onChange={(e) => setNewSelectedPosition({ ...newSelectedPosition, positionId: e.target.value })}
-                                >
-                                    {positionList.filter(p => p.department.id === 1).map((pst, idx) => {
-                                        return (
-                                            <MenuItem value={pst.id}>{pst.positionName}</MenuItem>
-                                        )
-                                    })}
-                                </Select>
+
 
                                 <Button
                                     type="submit"
@@ -352,4 +229,4 @@ const Employees = () => {
         </>
     )
 }
-export default Employees;
+export default Users;
